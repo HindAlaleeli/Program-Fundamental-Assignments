@@ -21,21 +21,29 @@ class Customer:
 
 class Item:
     """Represents an item in the delivery system."""
-    def __init__(self, code, description, quantity, unit_price, category, supplier):
+    def __init__(self, code, description, quantity, unit_price, category, supplier, tax_amount):
         self.__code = code
         self.__description = description
         self.__quantity = quantity
         self.__unit_price = unit_price
         self.__category = category
         self.__supplier = supplier
-
+        self.__tax_amount = tax_amount
+    
     def get_total_price(self):
-        """Calculates and returns the total price of the item."""
-        return self.__quantity * self.__unit_price
+        """Calculates and returns the total price of the item, including tax."""
+        subtotal = self.__quantity * self.__unit_price
+        total_tax = self.__quantity * self.__tax_amount  #Applying tax per item
+        return subtotal + total_tax
 
     def get_item_details(self):
-        """Returns item details."""
-        return str(self.__code) + " - " + self.__description + ": " + str(self.__quantity) + " x " + format(self.__unit_price, ".2f") + " AED"
+        """Returns item details, including tax."""
+        subtotal = self.__quantity * self.__unit_price
+        total_tax = self.__quantity * self.__tax_amount
+        total_price = subtotal + total_tax
+        return (str(self.__code) + " - " + self.__description + ": " + str(self.__quantity) + " x " +
+                format(self.__unit_price, ".2f") + " AED + Tax: " + format(total_tax, ".2f") + " AED " +
+                "= " + format(total_price, ".2f") + " AED")
 
     def check_availability(self):
         pass  #Checks if the item is available in stock
@@ -131,8 +139,8 @@ print("\n")
 print("Updated Address:", customer1.get_customer_info())
 
 #Item object
-item1 = Item("ITM001", "Wireless keyboard", 1, 100.00, "Electronics", "TechSupplier")
-item2 = Item("ITM002", "Keyboard", 2, 75.00, "Electronics", "TechSupplier")
+item1 = Item("ITM001", "Wireless keyboard", 1, 100.00, "Electronics", "TechSupplier", tax_amount=13.50)
+item2 = Item("ITM002", "Keyboard", 2, 75.00, "Electronics", "TechSupplier", tax_amount=13.50)
 print(item1.get_item_details())
 print("Total Price of Item1:", item1.get_total_price(), "AED")
 print("\n")
