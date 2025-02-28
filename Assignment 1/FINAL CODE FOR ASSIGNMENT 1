@@ -1,0 +1,155 @@
+class Customer:
+    """Represents a customer with personal details."""
+    def __init__(self, name, email, phone_number, delivery_address, customer_id):
+        self.__name = name
+        self.__email = email
+        self.__phone_number = phone_number
+        self.__delivery_address = delivery_address
+        self.__customer_id = customer_id
+
+    def get_customer_info(self):
+        """Returns customer information."""
+        return "Name: " + self.__name + "\nEmail: " + self.__email + "\nPhone: " + self.__phone_number + "\nAddress: " + self.__delivery_address
+
+    def update_address(self, new_address):
+        """Updates the delivery address of the customer."""
+        self.__delivery_address = new_address
+
+    def validate_customer(self):
+        pass  #Confirms the delivery details before dispatch
+
+
+class Item:
+    """Represents an item in the delivery system."""
+    def __init__(self, code, description, quantity, unit_price, category, supplier):
+        self.__code = code
+        self.__description = description
+        self.__quantity = quantity
+        self.__unit_price = unit_price
+        self.__category = category
+        self.__supplier = supplier
+
+    def get_total_price(self):
+        """Calculates and returns the total price of the item."""
+        return self.__quantity * self.__unit_price
+
+    def get_item_details(self):
+        """Returns item details."""
+        return str(self.__code) + " - " + self.__description + ": " + str(self.__quantity) + " x " + format(self.__unit_price, ".2f") + " AED"
+
+    def check_availability(self):
+        pass  #Checks if the item is available in stock
+
+
+class DeliveryNote:
+    """Represents a delivery note with recipient and item details."""
+    def __init__(self, recipient, contact, address, order_number, reference, delivery_date, method, items):
+        self.__recipient = recipient
+        self.__contact = contact
+        self.__address = address
+        self.__order_number = order_number
+        self.__reference = reference
+        self.__delivery_date = delivery_date
+        self.__method = method
+        self.__items = items
+
+    def calculate_total(self):
+        """Calculates the total cost of all items in the delivery note."""
+        return sum(item.get_total_price() for item in self.__items)
+
+    def generate_note(self):
+        """Generates a delivery note."""
+        item_details = "\n".join(item.get_item_details() for item in self.__items)
+        return "Delivery Note for " + self.__recipient + "\n" + \
+               "Contact: " + self.__contact + "\n" + \
+               "Address: " + self.__address + "\n" + \
+               "Order Number: " + self.__order_number + "\n" + \
+               "Reference: " + self.__reference + "\n" + \
+               "Delivery Date: " + self.__delivery_date + "\n" + \
+               "Method: " + self.__method + "\n\n" + \
+               "Items:\n" + item_details + "\n\n" + \
+               "Total: " + format(self.calculate_total(), ".2f") + " AED"
+
+    def validate_delivery(self):
+        pass  #Confirms delivery details before dispatch
+
+
+class TrackDeliveryStatus:
+    """Tracks the delivery status of an order."""
+    def __init__(self, order_id, current_status):
+        self.__order_id = order_id
+        self.__current_status = current_status
+
+    def track_status(self):
+        """Returns the current status of the order."""
+        return "Order " + self.__order_id + " is currently " + self.__current_status + "."
+
+    def update_status(self, new_status):
+        """Updates the delivery status of the order."""
+        self.__current_status = new_status
+
+    def notify_customer(self):
+        pass  #Sends a notification to the customer about status updates.
+
+
+class GenerateDeliveryReport:
+    """Generates a report for deliveries within a period."""
+    def __init__(self, report_id, period, total_orders):
+        self.__report_id = report_id
+        self.__period = period
+        self.__total_orders = total_orders
+
+    def generate_report(self):
+        """Generates a delivery report."""
+        return "Report " + self.__report_id + " for " + self.__period + ": " + str(self.__total_orders) + " orders."
+
+    def save_report(self):
+        pass  #Saves the generated report for future references.
+
+
+class PrintDeliveryNote:
+    """Handles the printing of a delivery note."""
+    def __init__(self, note_id, file_format, print_status):
+        self.__note_id = note_id
+        self.__file_format = file_format
+        self.__print_status = print_status
+
+    def print_note(self):
+        """Prints the delivery note."""
+        return "Printing Note " + self.__note_id + " in " + self.__file_format + " format."
+
+    def check_printer_status(self):
+        pass  #Checks the status of the printer if it is available before printing.
+
+#Create Objects
+
+#Customer object
+customer1 = Customer("Sarah Johnson", "sarah.johnson@example.com", "123456789", "45 Knowledge Avenue, Dubai, UAE", "CUST1001")
+print(customer1.get_customer_info())
+customer1.update_address("Abu Dhabi, UAE")
+print("\n")
+print("Updated Address:", customer1.get_customer_info())
+
+#Item object
+item1 = Item("ITM001", "Wireless keyboard", 1, 100.00, "Electronics", "TechSupplier")
+item2 = Item("ITM002", "Keyboard", 2, 75.00, "Electronics", "TechSupplier")
+print(item1.get_item_details())
+print("Total Price of Item1:", item1.get_total_price(), "AED")
+print("\n")
+# Creating a DeliveryNote object with multiple items
+delivery_note = DeliveryNote("Sarah Johnson", "123456789", "Abu Dhabi, UAE", "DEL123456789", "DN-2025-001", "January 25, 2025", "Courier", [item1, item2])
+print(delivery_note.generate_note())
+
+#TrackDeliveryStatus object
+delivery_status = TrackDeliveryStatus("DEL123456789", "Dispatched")
+print(delivery_status.track_status())
+delivery_status.update_status("Delivered")
+print(delivery_status.track_status())
+
+#GenerateDeliveryReport object
+report = GenerateDeliveryReport("REP2025", "February 2025", 50)
+print(report.generate_report())
+
+#PrintDeliveryNote object
+printer = PrintDeliveryNote("NOTE001", "PDF", "Pending")
+print(printer.print_note())
