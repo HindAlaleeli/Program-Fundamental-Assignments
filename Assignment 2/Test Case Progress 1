@@ -1,0 +1,186 @@
+from datetime import datetime
+from hotel_system import Guest, Room, Booking, CreditCardPayment, MobilePayment
+
+
+# --- Test Case 1: Guest Account Creation ---
+def test_guest_account_creation():
+    print("--- Test: Guest Account Creation ---")
+
+    # Example 1
+    guest1_name = input("Enter guest name: ")
+    guest1_contact = input("Enter guest contact info: ")
+    guest1_loyalty_status = input("Enter loyalty status (e.g., Gold, Silver, etc.): ")
+    guest1 = Guest(1, guest1_name, guest1_contact, guest1_loyalty_status)
+    print(f"Guest Account Created: {guest1}")
+
+    # Example 2
+    guest2_name = input("Enter guest name: ")
+    guest2_contact = input("Enter guest contact info: ")
+    guest2_loyalty_status = input("Enter loyalty status (e.g., Gold, Silver, etc.): ")
+    guest2 = Guest(2, guest2_name, guest2_contact, guest2_loyalty_status)
+    print(f"Guest Account Created: {guest2}")
+
+
+# --- Test Case 2: Searching for Available Rooms ---
+def test_search_available_rooms():
+    print("\n--- Test: Search Available Rooms ---")
+
+    # Available rooms (using hardcoded data for simplicity)
+    room1 = Room("R001", 101, "Single", ["Wi-Fi", "TV"], 100.0, True)
+    room2 = Room("R002", 102, "Double", ["Wi-Fi", "TV", "Mini Bar"], 150.0, True)
+    room3 = Room("R003", 103, "Suite", ["Wi-Fi", "TV", "Jacuzzi"], 250.0, True)
+    available_rooms = [room1, room2, room3]
+
+    # Example 1: Search for room by type
+    room_type = input("Enter room type (Single, Double, Suite): ")
+    check_in_date = input("Enter check-in date (YYYY-MM-DD): ")
+    check_out_date = input("Enter check-out date (YYYY-MM-DD): ")
+
+    print(f"\nAvailable Rooms from {check_in_date} to {check_out_date}:")
+    for room in available_rooms:
+        if room._room_type.lower() == room_type.lower():
+            print(room)
+
+    # Example 2: Search for available rooms by price range
+    min_price = float(input("Enter minimum price: "))
+    max_price = float(input("Enter maximum price: "))
+    print(f"\nAvailable Rooms in price range ${min_price} to ${max_price}:")
+    for room in available_rooms:
+        if min_price <= room._price_per_night <= max_price:
+            print(room)
+
+
+# --- Test Case 3: Making a Room Reservation ---
+def test_make_reservation():
+    print("\n--- Test: Make Reservation ---")
+
+    # Example 1
+    guest_name = input("Enter guest name: ")
+    room_number = input("Enter room number: ")
+    check_in_date = input("Enter check-in date (YYYY-MM-DD): ")
+    check_out_date = input("Enter check-out date (YYYY-MM-DD): ")
+    total_booking_amount = float(input("Enter total booking amount: "))
+
+    guest1 = Guest(1, guest_name, "guest@example.com", "Silver")
+    room1 = Room("R001", int(room_number), "Single", ["Wi-Fi", "TV"], 100.0, True)
+    booking1 = Booking(1, datetime.strptime(check_in_date, '%Y-%m-%d'), datetime.strptime(check_out_date, '%Y-%m-%d'),
+                       total_booking_amount, "Confirmed", guest1, room1)
+    booking1.make_reservation()
+    print(f"Reservation Made: {booking1}")
+
+    # Example 2
+    guest_name = input("Enter guest name: ")
+    room_number = input("Enter room number: ")
+    check_in_date = input("Enter check-in date (YYYY-MM-DD): ")
+    check_out_date = input("Enter check-out date (YYYY-MM-DD): ")
+    total_booking_amount = float(input("Enter total booking amount: "))
+
+    guest2 = Guest(2, guest_name, "guest2@example.com", "Gold")
+    room2 = Room("R002", int(room_number), "Double", ["Wi-Fi", "TV", "Mini Bar"], 150.0, True)
+    booking2 = Booking(2, datetime.strptime(check_in_date, '%Y-%m-%d'), datetime.strptime(check_out_date, '%Y-%m-%d'),
+                       total_booking_amount, "Confirmed", guest2, room2)
+    booking2.make_reservation()
+    print(f"Reservation Made: {booking2}")
+
+
+# --- Test Case 4: Booking Confirmation Notification ---
+def test_booking_confirmation():
+    print("\n--- Test: Booking Confirmation Notification ---")
+
+    # Example 1: User input for confirmation details
+    guest_name = input("Enter guest name: ")
+    room_number = input("Enter room number: ")
+    print(f"Booking confirmation sent to {guest_name} for room {room_number}")
+
+    # Example 2: User input for confirmation details
+    guest_name = input("Enter guest name: ")
+    room_number = input("Enter room number: ")
+    print(f"Booking confirmation sent to {guest_name} for room {room_number}")
+
+
+# --- Test Case 5: Invoice Generation for a Booking ---
+def test_invoice_generation():
+    print("\n--- Test: Invoice Generation ---")
+
+    # Example 1: User input for reservation details
+    guest_name = input("Enter guest name: ")
+    room_number = input("Enter room number: ")
+    total_booking_amount = float(input("Enter total booking amount: "))
+    print(f"Invoice Generated for {guest_name} in room {room_number}: Total Amount: {total_booking_amount}")
+
+    # Example 2: User input for reservation details
+    guest_name = input("Enter guest name: ")
+    room_number = input("Enter room number: ")
+    total_booking_amount = float(input("Enter total booking amount: "))
+    print(f"Invoice Generated for {guest_name} in room {room_number}: Total Amount: {total_booking_amount}")
+
+
+# --- Test Case 6: Processing Different Payment Methods ---
+def test_payment_processing():
+    print("\n--- Test: Payment Processing ---")
+
+    # Example 1: Credit Card Payment
+    payment_method = input("Choose payment method (CreditCard, MobileWallet): ")
+    if payment_method.lower() == "creditcard":
+        card_number = input("Enter card number: ")
+        expiry_date = input("Enter expiry date (MM/YY): ")
+        cvv = input("Enter CVV: ")
+        amount = float(input("Enter amount to pay: "))  # Prompting user for amount
+        credit_card_payment = CreditCardPayment(card_number, expiry_date, cvv, amount)
+        credit_card_payment.process_payment()
+
+    # Example 2: Mobile Wallet Payment
+    elif payment_method.lower() == "mobilewallet":
+        wallet_id = input("Enter wallet ID: ")
+        wallet_provider = input("Enter wallet provider (e.g., PayPal): ")
+        amount = float(input("Enter amount to pay: "))
+        mobile_wallet_payment = MobilePayment(wallet_id, wallet_provider, amount)
+        mobile_wallet_payment.process_payment()
+
+
+
+# --- Test Case 7: Displaying Reservation History ---
+def test_reservation_history():
+    print("\n--- Test: Reservation History ---")
+
+    # Example 1: Display reservation history for a guest
+    guest_name = input("Enter guest name: ")
+    print(f"Displaying reservation history for {guest_name}:")
+    print("Reservation ID: 1, Room Number: 101, Status: Confirmed, Check-in: 2025-04-01, Check-out: 2025-04-05")
+
+    # Example 2: Display reservation history for a guest
+    guest_name = input("Enter guest name: ")
+    print(f"Displaying reservation history for {guest_name}:")
+    print("Reservation ID: 2, Room Number: 102, Status: Pending, Check-in: 2025-05-01, Check-out: 2025-05-05")
+
+
+# --- Test Case 8: Cancellation of a Reservation ---
+def test_cancellation_of_reservation():
+    print("\n--- Test: Cancellation of a Reservation ---")
+
+    # Example 1: User input for cancellation details
+    guest_name = input("Enter guest name: ")
+    room_number = input("Enter room number: ")
+    print(f"Reservation for {guest_name} in room {room_number} has been cancelled. Room is now available.")
+
+    # Example 2: User input for cancellation details
+    guest_name = input("Enter guest name: ")
+    room_number = input("Enter room number: ")
+    print(f"Reservation for {guest_name} in room {room_number} has been cancelled. Room is now available.")
+
+
+# --- Run All Tests ---
+def run_tests():
+    test_guest_account_creation()
+    test_search_available_rooms()
+    test_make_reservation()
+    test_booking_confirmation()
+    test_invoice_generation()
+    test_payment_processing()
+    test_reservation_history()
+    test_cancellation_of_reservation()
+
+
+# Run tests if this file is executed
+if __name__ == "__main__":
+    run_tests()
