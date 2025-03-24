@@ -1,0 +1,524 @@
+from datetime import datetime
+from typing import List
+
+#Hotel Class
+class Hotel:
+    """ Class representing the hotel. """
+
+    def __init__(self, hotel_name: str, location: str, contact_info: str, rating: float):
+        """ Initialize a hotel. """
+        self._hotel_name = hotel_name
+        self._location = location
+        self._contact_info = contact_info
+        self._rating = rating
+        self._rooms = []  # List of rooms in the hotel
+        self._reviews = []  # List of reviews for the hotel
+
+    def get_available_rooms(self):
+        """ Gets a list of available rooms. """
+        return [room for room in self._rooms if room.check_availability()]
+
+    def search_rooms(self, room_type: str = None, max_price: float = None):
+        """ Searchs for rooms based on the type or price. """
+        available_rooms = self.get_available_rooms()
+        if room_type:
+            available_rooms = [room for room in available_rooms if room.get_room_type() == room_type]
+        if max_price:
+            available_rooms = [room for room in available_rooms if room.get_price_per_night() <= max_price]
+        return available_rooms
+
+    def calculate_average_rating(self):
+        """ Calculates the average rating of the hotel based on the reviews. """
+        if not self._reviews:
+            return 0.0  # Return 0 if there are no reviews
+        total_rating = sum(review.get_rating() for review in self._reviews)
+        return total_rating / len(self._reviews)
+
+    def view_guest_feedback(self):
+        """ Views the feedback from guests (reviews). """
+        return [str(review) for review in self._reviews]
+
+    def add_room(self, room):
+        """ Adds a room to the hotel. """
+        self._rooms.append(room)
+        print(f"Room {room.get_room_number()} added to the hotel.")
+
+    def remove_room(self, room):
+        """ Removes a room from the hotel. """
+        if room in self._rooms:
+            self._rooms.remove(room)
+            print(f"Room {room.get_room_number()} removed from the hotel.")
+        else:
+            print(f"Room {room.get_room_number()} not found in the hotel.")
+
+    def get_average_rating(self):
+        """ Gets the average rating of the hotel. """
+        return self.calculate_average_rating()
+
+    def get_reviews(self):
+        """ Gets a list of reviews for the hotel. """
+        return self.view_guest_feedback()
+
+    def __str__(self):
+        """ Returns a string representation of the hotel. """
+        return f"Hotel Name: {self._hotel_name}, Location: {self._location}, Rating: {self._rating}, Contact Info: {self._contact_info}"
+
+#Guest Class
+class Guest:
+    """ Class representing a hotel guest. """
+
+    def __init__(self, guest_id: int, name: str, contact_info: str, loyalty_status: str, account_details: dict = None):
+        """ Initializes a guest. """
+        self._guest_id = guest_id
+        self._name = name
+        self._contact_info = contact_info
+        self._loyalty_status = loyalty_status
+        self._account_details = account_details if account_details else {}
+
+    def get_guest_id(self):
+        return self._guest_id
+
+    def set_guest_id(self, value):
+        self._guest_id = value
+
+    def get_name(self):
+        return self._name
+
+    def set_name(self, value):
+        self._name = value
+
+    def get_contact_info(self):
+        return self._contact_info
+
+    def set_contact_info(self, value):
+        self._contact_info = value
+
+    def get_loyalty_status(self):
+        return self._loyalty_status
+
+    def set_loyalty_status(self, value):
+        self._loyalty_status = value
+
+    def get_account_details(self):
+        return self._account_details
+
+    def set_account_details(self, value):
+        self._account_details = value
+
+    def create_profile(self):
+        """ Creates a new profile for the guest. """
+        print(f"Profile created for {self._name} (Guest ID: {self._guest_id})")
+
+    def update_profile(self, name=None, contact_info=None, loyalty_status=None):
+        """ Updates guest profile information. """
+        if name:
+            self._name = name
+        if contact_info:
+            self._contact_info = contact_info
+        if loyalty_status:
+            self._loyalty_status = loyalty_status
+        print(f"Profile updated for Guest ID {self._guest_id}")
+
+    def view_reservation_history(self):
+        """ Displays the guest's past reservation history. """
+        print(f"Showing reservation history for {self._name} (Guest ID: {self._guest_id})")
+
+    def __str__(self):
+        """ Returns a string representation of the guest. """
+        return f"Guest ID: {self._guest_id}, Name: {self._name}, Contact: {self._contact_info}, Loyalty Status: {self._loyalty_status}"
+
+# Room Class
+class Room:
+    """ Class representing a room in the hotel. """
+
+    def __init__(self, room_id: str, room_number: int, room_type: str, amenities: List[str], price_per_night: float, availability_status: bool):
+        """ Initialize a room in the hotel. """
+        self._room_id = room_id
+        self._room_number = room_number
+        self._room_type = room_type
+        self._amenities = amenities
+        self._price_per_night = price_per_night
+        self._availability_status = availability_status
+
+    def get_room_id(self):
+        return self._room_id
+
+    def set_room_id(self, value):
+        self._room_id = value
+
+    def get_room_number(self):
+        return self._room_number
+
+    def set_room_number(self, value):
+        self._room_number = value
+
+    def get_room_type(self):
+        return self._room_type
+
+    def set_room_type(self, value):
+        self._room_type = value
+
+    def get_amenities(self):
+        return self._amenities
+
+    def set_amenities(self, value):
+        self._amenities = value
+
+    def get_price_per_night(self):
+        return self._price_per_night
+
+    def set_price_per_night(self, value):
+        self._price_per_night = value
+
+    def get_availability_status(self):
+        return self._availability_status
+
+    def set_availability_status(self, value):
+        self._availability_status = value
+
+    def check_availability(self):
+        """ Check if the room is available. """
+        return self._availability_status
+
+    def update_availability(self, status):
+        """ Updates the availability status of the room. """
+        self._availability_status = status
+        print(f"Room {self._room_number} availability updated to {'Available' if status else 'Occupied'}.")
+
+    def get_room_details(self):
+        """ Returns detailed information about the room. """
+        return (f"Room ID: {self._room_id}, Number: {self._room_number}, "
+                f"Type: {self._room_type}, Price: {self._price_per_night}, "
+                f"Amenities: {', '.join(self._amenities)}, "
+                f"Availability: {'Available' if self._availability_status else 'Occupied'}")
+
+    def __str__(self):
+        """ Returns a string representation of the room. """
+        return self.get_room_details()
+
+#Booking class
+class Booking:
+    """ Class representing a hotel booking. """
+    def __init__(self, booking_id, check_in_date, check_out_date, total_amount, status, guest, room):
+        """ Initializes a booking. """
+        # The Booking class now owns the Guest and Room objects
+        self._booking_id = booking_id
+        self._check_in_date = check_in_date
+        self._check_out_date = check_out_date
+        self._total_amount = total_amount
+        self._status = status
+        self._guest = guest
+        self._room = room
+
+    def get_booking_id(self):
+        return self._booking_id
+
+    def set_booking_id(self, value):
+        self._booking_id = value
+
+    def get_check_in_date(self):
+        return self._check_in_date
+
+    def set_check_in_date(self, value):
+        self._check_in_date = value
+
+    def get_check_out_date(self):
+        return self._check_out_date
+
+    def set_check_out_date(self, value):
+        self._check_out_date = value
+
+    def get_total_amount(self):
+        return self._total_amount
+
+    def set_total_amount(self, value):
+        self._total_amount = value
+
+    def get_status(self):
+        return self._status
+
+    def set_status(self, value):
+        self._status = value
+
+    def search_available_rooms(self):
+        """ Search for available rooms. """
+        return [self._room]
+
+    def make_reservation(self):
+        """ Confirm the reservation. """
+        self._status = "Confirmed"
+        print(f"Booking confirmed for {self._guest.get_name()} in room {self._room.get_room_number()}.")
+        self.send_confirmation()
+
+    def send_confirmation(self):
+        """ Sends a confirmation message to the guest. """
+        print(f"Confirmation email sent to {self._guest.get_contact_info()} for booking {self._booking_id}.")
+
+    def __str__(self):
+        """ Returns a string representation of the booking. """
+        return f"Booking ID: {self._booking_id}, Guest: {self._guest.get_name()}, Room: {self._room.get_room_number()}, Status: {self._status}"
+
+#Payment Class
+class Payment:
+    """ Class representing a payment for an invoice. """
+    def __init__(self, payment_id, invoice_id, amount, payment_date, status, payment_method):
+        self._payment_id = payment_id
+        self._invoice_id = invoice_id
+        self._amount = amount
+        self._payment_date = payment_date
+        self._status = status
+        self._payment_method = payment_method
+
+    def process_payment(self):
+        self._payment_method.process_payment()
+        self._status = 'Completed'
+        print(f"Payment of {self._amount} for Invoice ID: {self._invoice_id} processed successfully.")
+
+    def refund_payment(self):
+        self._status = 'Refunded'
+        print(f"Payment of {self._amount} for Invoice ID: {self._invoice_id} has been refunded.")
+
+    def __str__(self):
+        return f"Payment ID: {self._payment_id}, Invoice ID: {self._invoice_id}, Amount: {self._amount}, " \
+               f"Payment Date: {self._payment_date}, Status: {self._status}, Payment Method: {self._payment_method}"
+
+class PaymentMethod:
+    def process_payment(self):
+        pass
+
+class CreditCardPayment(PaymentMethod):
+    def __init__(self, card_number, expiry_date, cvv, amount):
+        self.card_number = card_number
+        self.expiry_date = expiry_date
+        self.cvv = cvv
+        self.amount = amount
+
+    def process_payment(self):
+        print(f"Processing credit card payment of ${self.amount}.")
+
+class MobilePayment(PaymentMethod):
+    def __init__(self, mobile_number, payment_provider, amount):
+        self._mobile_number = mobile_number
+        self._payment_provider = payment_provider
+        self._amount = amount
+
+    def process_payment(self):
+        print(f"Processing mobile payment of ${self._amount} through {self._payment_provider}.")
+
+
+#Loyalty Status Class
+class LoyaltyStatus:
+    """ Class representing a guest's loyalty status. """
+
+    def __init__(self, status: str, points: int, rewards: list = None):
+        """ Initializes loyalty status with status, points, and associated rewards. """
+        self._status = status
+        self._points = points
+        self._rewards = rewards if rewards else []  # Aggregation: list of Rewards
+
+    def get_status(self):
+        return self._status
+
+    def get_points(self):
+        return self._points
+
+    def add_points(self, amount: int):
+        """ Adds points to the loyalty account. """
+        self._points += amount
+
+    def deduct_points(self, amount: int):
+        """ Deducts points if there are enough available. """
+        if self._points >= amount:
+            self._points -= amount
+            return True
+        return False
+
+    def add_reward(self, reward: 'Rewards'):
+        """ Associates a reward with this loyalty status. """
+        self._rewards.append(reward)
+
+    def get_rewards(self):
+        """ Returns the list of associated rewards. """
+        return self._rewards
+
+    def __str__(self):
+        return f"Status: {self._status}, Points: {self._points}, Rewards: {[str(r) for r in self._rewards]}"
+
+#Reward Class:
+class Rewards:
+    """ Class representing Rewards for guests. """
+
+    def __init__(self, reward_type: str, points_required: int):
+        self._reward_type = reward_type
+        self._points_required = points_required
+
+    def redeem_reward(self, loyalty_status: LoyaltyStatus):
+        """ Redeems a reward based on the guest's loyalty status and available points. """
+        if loyalty_status.deduct_points(self._points_required):
+            print(f"Reward '{self._reward_type}' redeemed!")
+            return True
+        else:
+            print(f"Not enough points to redeem '{self._reward_type}'.")
+            return False
+
+    def __str__(self):
+        return f"Reward: {self._reward_type}, Points Required: {self._points_required}"
+
+
+class Invoice:
+    """ Class representing an invoice for a guest's booking. """
+
+    def __init__(self, invoice_id: str, booking_id: str, guest_id: str, room_charges: float, additional_charges: float, discounts: float, invoice_date: datetime):
+        """ Initializes an invoice. """
+        self._invoice_id = invoice_id
+        self._booking_id = booking_id
+        self._guest_id = guest_id
+        self._room_charges = room_charges
+        self._additional_charges = additional_charges
+        self._discounts = discounts
+        self._total_amount = 0.0
+        self._invoice_date = invoice_date
+        self._payments = []  # List of payments associated with the invoice
+
+    def calculate_total(self):
+        """ Calculates the total amount for the invoice."""
+        self._total_amount = (self._room_charges + self._additional_charges) - self._discounts
+        return self._total_amount
+
+    def generate_invoice(self):
+        """ Generates the invoice details. """
+        return f"Invoice ID: {self._invoice_id}, Booking ID: {self._booking_id}, Guest ID: {self._guest_id}, " \
+               f"Room Charges: {self._room_charges}, Additional Charges: {self._additional_charges}, " \
+               f"Discounts: {self._discounts}, Total Amount: {self.calculate_total()}, Invoice Date: {self._invoice_date.strftime('%Y-%m-%d')}"
+
+    def add_payment(self, payment: Payment):
+        """ Adds a payment to the invoice. """
+        if payment._invoice_id == self._invoice_id:
+            self._payments.append(payment)
+            print(f"Payment of {payment._amount} added to invoice {self._invoice_id}.")
+        else:
+            print("Payment does not correspond to this invoice.")
+
+    def get_payments(self):
+        """ Returns a list of payments associated with this invoice. """
+        return self._payments
+
+    def __str__(self):
+        """ Returns a string representation of the invoice. """
+        payments_str = "\n".join([str(payment) for payment in self._payments])
+        return f"Invoice ID: {self.invoice_id}, Total: {total}, Payments:\n{payment_details if payment_details else 'No payments yet'}"
+
+#HotelStaff Class
+class HotelStaff:
+    """ Class representing hotel staff members. """
+
+    def __init__(self, staff_id: str, name: str, role: str):
+        """ Initializes a hotel staff member. """
+        self._staff_id = staff_id
+        self._name = name
+        self._role = role
+        self._assigned_requests = []
+
+    def get_assigned_requests(self):
+        """ Returns the list of requests assigned to the staff. """
+        return self._assigned_requests
+
+    def assign_request(self, service_request):
+        """ Assigns a service request to this staff member. """
+        self._assigned_requests.append(service_request)
+        print(f"Staff member {self._name} assigned to request.")
+
+    def __str__(self):
+        """ Returns a string representation of the hotel staff member. """
+        return f"Staff ID: {self._staff_id}, Name: {self._name}, Role: {self._role}"
+
+
+# ServiceRequest Class
+class ServiceRequest:
+    """ Class representing a service request from a guest. """
+
+    def __init__(self, request_id: int, guest_id: str, service_type: str):
+        """ Initialize a service request. """
+        self._request_id = request_id
+        self._guest_id = guest_id
+        self._service_type = service_type
+        self._request_status = "Pending"
+        self._request_date = datetime.now()
+        self._assigned_staff = None
+
+    def assign_to_staff(self, staff: 'HotelStaff'):
+        """ Assigns this service request to a staff member. """
+        self._assigned_staff = staff
+        staff.assign_request(self)
+        print(f"Service request {self._request_id} has been assigned to staff member {staff._name}.")
+
+    def __str__(self):
+        """ Returns a string representation of the service request. """
+        return f"Request ID: {self._request_id}, Service Type: {self._service_type}, Status: {self._request_status}, Assigned Staff: {self._assigned_staff._name if self._assigned_staff else 'None'}"
+
+#Review Class
+class Review:
+    """ Class representing a review for a hotel. """
+
+    def __init__(self, review_id: str, guest_id: str, hotel_id: str, rating: int, comment: str, review_date: datetime):
+        """ Initialize a review. """
+        self._review_id = review_id
+        self._guest_id = guest_id
+        self._hotel_id = hotel_id
+        self._rating = rating
+        self._comment = comment
+        self._review_date = review_date
+
+    def get_review_id(self):
+        return self._review_id
+
+    def set_review_id(self, value):
+        self._review_id = value
+
+    def get_guest_id(self):
+        return self._guest_id
+
+    def set_guest_id(self, value):
+        self._guest_id = value
+
+    def get_hotel_id(self):
+        return self._hotel_id
+
+    def set_hotel_id(self, value):
+        self._hotel_id = value
+
+    def get_rating(self):
+        return self._rating
+
+    def set_rating(self, value):
+        self._rating = value
+
+    def get_comment(self):
+        return self._comment
+
+    def set_comment(self, value):
+        self._comment = value
+
+    def get_review_date(self):
+        return self._review_date
+
+    def set_review_date(self, value):
+        self._review_date = value
+
+    def submit_review(self):
+        """ Submits the review to the system. """
+        print(f"Review submitted by Guest ID: {self._guest_id} for Hotel ID: {self._hotel_id}. Rating: {self._rating} stars. Comment: {self._comment}")
+
+    def edit_review(self, new_rating: int, new_comment: str):
+        """ Edits an existing review. """
+        self._rating = new_rating
+        self._comment = new_comment
+        print(f"Review edited for Hotel ID: {self._hotel_id}. New Rating: {self._rating} stars. New Comment: {self._comment}")
+
+    def delete_review(self):
+        """ Deletes the review. """
+        print(f"Review with ID: {self._review_id} deleted.")
+
+    def __str__(self):
+        """ Returns a string representation of the review. """
+        return f"Review ID: {self._review_id}, Guest ID: {self._guest_id}, Hotel ID: {self._hotel_id}, Rating: {self._rating}, Comment: {self._comment}, Date: {self._review_date.strftime('%Y-%m-%d')}"
