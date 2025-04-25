@@ -1,0 +1,81 @@
+Based on the scenario, these are the core classes:
+User – Fan/customer who uses the system
+Account – Holds user details and purchase history.
+Booking – Represents a reservation
+Ticket: Ticket – Represents a purchased ticket tied to a specific event.
+TicketType – An abstract class defining different types: Single-Race, Weekend, Season, Group.
+Payment – For handling payments
+Event – A race or related event
+VenueService – Food, merchandise, parking, etc.
+Administrator – Manages ticket sales and capacity
+
+Relationships
+User – Account (Composition)
+A User is the “whole” that owns exactly one Account; if a User is deleted, their Account no longer exists.
+Relationship type: Composition (the part “Account” cannot exist independently without the whole “User”).
+Notation: Filled diamond on the User side.
+Multiplicity Notations:
+User side: 1 → each User must have one Account
+Account side: 1 → each Account belongs to exactly one User
+
+Account – Booking (Composition)
+An Account “owns” its Bookings; if an Account (whole) is deleted, all its Bookings (part) are deleted.
+Relationship type: Composition (Strong Whole-Part Relationship).
+Notation: Filled diamond at the Account end.
+Multiplicity Notations:
+Account side: 1 → an Account must exist to have Bookings
+Booking side: 0..* → an Account can have zero or many Bookings
+
+Booking – Ticket (Composition)
+Each Booking (whole) generates exactly one Ticket (part)  which cannot exist without its Booking.
+Relationship type: Composition
+Notation: Filled diamond at the Booking end.
+Multiplicity Notations:
+Booking side: 1 → must have one Ticket
+Ticket side: 1 → belongs to exactly one Booking
+
+
+Booking – Payment (Composition)
+A Booking is the “whole” that owns exactly one Payment; if a Booking is removed, its Payment does not exist.
+Relationship type: Composition (the part “Payment” cannot exist independently of its whole “Booking”).
+Notation: Filled diamond on the Booking side.
+Multiplicity Notations:
+Booking side: 1 → each Booking must have one Payment
+Payment side: 1 → each Payment belongs to exactly one Booking
+
+
+Ticket –  TicketType (Composition)
+A Ticket is the “whole” that owns exactly one TicketType “part” ; if a Ticket is deleted, its TicketType part cannot exist.
+Relationship type: Composition 
+Notation: Filled diamond on the Ticket side.
+Multiplicity Notations:
+Ticket side: 1 → each Ticket must have one TicketType
+TicketType side: 1 → each TicketType (as used by this Ticket) belongs to exactly one Ticket
+
+TicketType – {SingleRace, WeekendPackage, SeasonMembership, GroupDiscount} (Inheritance)
+TicketType is abstract, its four subclasses inherit its attributes and must implement their own version of calculatePrice().
+Relationship type: Inheritance “is- a relationship” (Generalization)
+Notation: Unfilled triangle arrow pointing to TicketType.
+
+Ticket – Event (Association)
+A Ticket is issued for exactly one Event; each Event may have many Tickets sold.
+Relationship type: Association “has-a relationship”.
+Multiplicity Notations:
+Ticket side: 1 → exactly one Event
+Event side: 0..* → zero or many Tickets
+
+Event – VenueService (Aggregation)
+An Event is the “whole” that aggregates zero or more VenueServices “part”, but each VenueService can exist independently of any particular Event.
+Relationship type: Aggregation (weak whole–part).
+Notation: Unfilled diamond on the Event side.
+Multiplicity Notations:
+Event side: 1 → each Event may aggregate multiple services
+VenueService side: 0..* → a service can belong to zero or many Events
+
+Administrator – {Booking, Event} (Association)
+An Administrator can view and update zero or many Booking and Event records.
+Relationship type: Association (has- a relationship).
+Multiplicity:
+Administrator side: 1 → each Administrator may manage multiple Bookings and Events
+Booking side: 0..* → a Booking may be managed by zero or many Administrators
+Event side: 0..* → an Event may be managed by zero or many Administrators
