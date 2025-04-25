@@ -1,0 +1,52 @@
+
+class User: #Relationship: Composition, a User object is expected to be associated with one Account.
+    """Represents a user of the ticket reservation system."""
+    def __init__(self, user_id: int, name: str, email: str, password: str):
+        self._user_id = user_id
+        self._name = name
+        self._email = email
+        self._password = password
+
+    def __str__(self):
+        return f"User: {self._name}, Email: {self._email}"
+
+    #Getters and Setters
+    def get_name(self):
+        return self._name
+
+    def set_name(self, name):
+        self._name = name
+
+
+class Account:
+    """Represents a user's account containing their booking history."""
+    def __init__(self, account_id: int, user):
+        self._account_id = account_id
+        self._user = user  #Composition: tightly linked to a User
+        self._bookings = []  #Composition: contains multiple Booking instances
+
+    def add_booking(self, booking):
+        self._bookings.append(booking)  #Adds a Booking to the user's account history
+
+    def __str__(self):
+        return f"Account ID: {self._account_id}"
+
+
+class Administrator:
+    """Admin can manage events and bookings in the system."""
+    def __init__(self, admin_id: int, name: str, email: str, password: str):
+        self._admin_id = admin_id
+        self._name = name
+        self._email = email
+        self._password = password
+        self._managed_bookings = []  #Association: loosely connected, can manage any Booking
+        self._managed_events = []  #Association: loosely connected, can manage any Event
+
+    def manage_booking(self, booking):
+        self._managed_bookings.append(booking)
+
+    def manage_event(self, event):
+        self._managed_events.append(event)
+
+    def __str__(self):
+        return "Admin: " + self._name
