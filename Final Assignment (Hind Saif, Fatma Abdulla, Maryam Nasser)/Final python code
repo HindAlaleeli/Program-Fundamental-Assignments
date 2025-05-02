@@ -1,0 +1,186 @@
+User Class:
+class User: #Relationship: Composition, a User object is expected to be associated with one Account.
+    """Represents a user of the ticket reservation system."""
+    def __init__(self, user_id: int, name: str, email: str, password: str):
+        self._user_id = user_id
+        self._name = name
+        self._email = email
+        self._password = password
+
+    #Getters and Setters
+    def get_name(self):
+        return self._name
+
+    def set_name(self, name):
+        self._name = name
+
+    def __str__(self):
+        return f"User: {self._name}, Email: {self._email}"
+
+
+Account Class:
+class Account:
+    """Represents a user's account containing their booking history."""
+    def __init__(self, account_id: int, user):
+        self._account_id = account_id
+        self._user = user  #Composition: tightly linked to a User
+        self._bookings = []  #Composition: contains multiple Booking instances
+
+    def add_booking(self, booking):
+        self._bookings.append(booking)  #Adds a Booking to the user's account history
+  
+  def cancel_booking(self, booking_id):
+        for booking in self._bookings:
+            if booking._booking_id == booking_id:
+                booking.cancel_booking()
+                self._bookings.remove(booking)
+                print(f"Booking ID {booking_id} removed from account.")
+                return True
+
+        print(f"Booking ID {booking_id} not found.")
+        return False
+    def __str__(self):
+        return f"Account ID: {self._account_id}"
+
+Administrator Class:
+class Administrator:
+    """Admin can manage events and bookings in the system."""
+    def __init__(self, admin_id: int, name: str, email: str, password: str):
+        self._admin_id = admin_id
+        self._name = name
+        self._email = email
+        self._password = password
+        self._managed_bookings = []  #Association: loosely connected, can manage any Booking
+        self._managed_events = []  #Association: loosely connected, can manage any Event
+
+    def manage_booking(self, booking):
+        self._managed_bookings.append(booking)
+
+    def manage_event(self, event):
+        self._managed_events.append(event)
+
+    def __str__(self):
+        return "Admin: " + self._name
+
+Payment Class:
+class Payment:
+    """Stores information about a payment transaction."""
+    def __init__(self, payment_id: int, amount: float, method: str, status: str):
+        self._payment_id = payment_id
+        self._amount = amount
+        self._method = method
+        self._status = status  #Composition: each Payment is tightly bound to a Booking
+
+    def update_status(self, status: str):
+        self._status = status  #Updates payment status (e.g., from 'Pending' to 'Paid')
+
+    def __str__(self):
+        return "Payment: " + str(self._amount) + " via " + self._method + " - " + self._status
+
+
+Booking Class:
+class Booking:
+    """Represents a ticket booking made by a user."""
+    def __init__(self, booking_id: int, user, ticket, payment, booking_date):
+        self._booking_id = booking_id
+        self._user = user  #Association: Booking refers to a User
+        self._ticket = ticket  #Composition: Booking owns the Ticket
+        self._payment = payment  #Composition: Booking owns the Payment
+        self._booking_date = booking_date
+
+  def confirm_booking(self):
+        if self._payment._status.lower() == "paid":
+            print(f"Booking {self._booking_id} confirmed.")
+            return True
+        print(f"Booking {self._booking_id} not confirmed: Payment not completed.")
+        return False
+
+    def cancel_booking(self):
+        self._payment.update_status("Cancelled")
+        print(f"Booking {self._booking_id} has been cancelled.")
+        return True
+
+    def __str__(self):
+        return "Booking ID: " + str(self._booking_id) + " for " + self._user._name + " on " + self._booking_date
+
+
+TicketType Class:
+class TicketType:
+    """Abstract base class for different ticket types."""
+    def __init__(self, description: str, source: str):
+        self._description = description
+        self._source = source  # Used to indicate where/how the ticket was obtained
+
+    def calculate_price(self):
+        return 0.0  # Should be overridden in subclasses
+
+    def __str__(self):
+        return self._description + " (" + self._source + ")"
+
+
+
+SingleRace, WeekendPackage, SeasonMembership, GroupDiscount Class:
+# Inheritance: Specific ticket types derived from TicketType base class
+class SingleRace(TicketType):
+    """Represents a ticket for a single race event."""
+    def calculate_price(self):
+        return 100.0  # Flat rate for one race
+
+class WeekendPackage(TicketType):
+    """Represents a weekend access package."""
+    def calculate_price(self):
+        return 250.0  # Discounted rate for full weekend access
+
+class SeasonMembership(TicketType):
+    """Represents a season-long membership ticket."""
+    def calculate_price(self):
+        return 800.0  # Higher cost for extended access
+
+class GroupDiscount(TicketType):
+    """Represents a discounted ticket for group bookings."""
+    def calculate_price(self):
+        return 70.0  # Lower cost per ticket for group purchases
+
+Ticket Class:
+class Ticket:
+    """Represents a ticket for a specific event."""
+    def __init__(self, ticket_id: int, price: float, event, ticket_type):
+        self._ticket_id = ticket_id
+        self._price = price
+        self._event = event  #Association: each Ticket is for one Event
+        self._ticket_type = ticket_type  #Composition: contains a TicketType object
+
+    def get_price(self):
+        return self._ticket_type.calculate_price()  #Calculates based on ticket type
+
+    def __str__(self):
+        return "Ticket #" + str(self._ticket_id) + " for " + self._event._name + ", Type: " + str(self._ticket_type) + ", Price: " + str(self.get_price())
+
+
+VenueService Class:
+class VenueService:
+    """Additional services available at an event's venue."""
+    def __init__(self, service_id: int, name: str, description: str):
+        self._service_id = service_id
+        self._name = name
+        self._description = description
+
+    def __str__(self):
+        return "Service: " + self._name + " - " + self._description
+
+Event Class:
+class Event:
+    """Represents an event that users can attend by purchasing tickets."""
+    def __init__(self, event_id: int, name: str, date: str, location: str, capacity: int):
+        self._event_id = event_id
+        self._name = name
+        self._date = date
+        self._location = location
+        self._capacity = capacity
+        self._venue_services = []  #Aggregation: Event can exist independently of VenueService
+
+    def add_venue_service(self, service):
+        self._venue_services.append(service)  # Adds a VenueService to the event (aggregation)
+
+    def __str__(self):
+        return "Event: " + self._name + " on " + self._date + " at " + self._location
